@@ -1,9 +1,14 @@
 # PostgreSQL 包装
 
+## 安装
+```
+sudo pip install psqlwrapper
+```
+
 ## 使用方法
 
 ```
-from pgsql import Connection
+from psqlwrapper import Connection
 
 ## 链接PostgreSQL
 connection = Connection(user='postgres', database='main', host='localhost')
