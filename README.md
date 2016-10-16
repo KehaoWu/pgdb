@@ -2,7 +2,7 @@
 
 ## 安装
 ```
-sudo pip install psqlwrapper
+sudo pip install pgdb
 ```
 
 ## 使用方法
@@ -40,6 +40,6 @@ connection.close()
 python setup.py sdist
 
 ## edit ~/.pypirc
-twine register dist/psqlwrapper-0.0.1.tar.gz
-twine upload dist/psqlwrapper-0.0.1.tar.gz
+twine register dist/pgdb-0.0.1.tar.gz
+twine upload dist/pgdb-0.0.1.tar.gz
 ```
