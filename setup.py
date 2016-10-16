@@ -1,0 +1,21 @@
+from setuptools import setup
+
+setup(name='psqlwrapper',
+      version='0.0.1',
+      description="PostgreSQL wrapper",
+      long_description="",
+      classifiers=["Development Status :: 5 - Production/Stable",
+                   "License :: OSI Approved :: Apache Software License",
+                   "Programming Language :: Python :: 3.5",
+                   "Programming Language :: SQL",
+                   "Topic :: Database"],
+      keywords='psql postgres postgresql sql wrapper',
+      author='@wukehao',
+      author_email='kehao.wu@gmail.com',
+      url='https://github.com/KehaoWu/psqlwrapper',
+      license='Apache v2.0',
+      packages=['psqlwrapper'],
+      include_package_data=True,
+      zip_safe=True,
+      install_requires=["psycopg2>=2.5.2"],
+      entry_points="")
