@@ -8,7 +8,7 @@ sudo pip install pgdb
 ## 使用方法
 
 ```
-from psqlwrapper import Connection
+from pgdb import Connection
 
 ## 链接PostgreSQL
 connection = Connection(user='postgres', database='main', host='localhost')
