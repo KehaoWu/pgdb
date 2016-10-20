@@ -62,7 +62,7 @@ class Connection:
     def execute(self, *args, **kwargs):
         cursor = self._cursor()
         try:
-            cursor.excute(*args, **kwargs)
+            cursor.execute(*args, **kwargs)
             self.commit()
         except:
             raise

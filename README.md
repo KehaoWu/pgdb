@@ -3,6 +3,7 @@
 ## 安装
 ```
 sudo pip install pgdb
+# sudo python3 -m pip install pgdb
 ```
 
 ## 使用方法
@@ -40,6 +41,11 @@ connection.close()
 python setup.py sdist
 
 ## edit ~/.pypirc
+### [pypi]
+### repository = https://pypi.python.org/pypi
+### username =  
+### password =  
+
 twine register dist/pgdb-0.0.1.tar.gz
 twine upload dist/pgdb-0.0.1.tar.gz
 ```
