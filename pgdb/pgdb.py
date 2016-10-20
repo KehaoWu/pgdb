@@ -6,7 +6,7 @@ class Connection:
         主要实现四个功能：
         get: fetchone
         query: fetchall
-        excute:
+        execute:
         executemany:
 
         其余功能:
@@ -73,7 +73,7 @@ class Connection:
     def executemany(self, *args, **kwargs):
         cursor = self._cursor()
         try:
-            cursor.excutemany(*args, **kwargs)
+            cursor.executemany(*args, **kwargs)
             self.commit()
         except:
             raise
