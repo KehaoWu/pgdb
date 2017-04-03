@@ -49,3 +49,10 @@ python setup.py sdist
 twine register dist/pgdb-0.0.1.tar.gz
 twine upload dist/pgdb-0.0.1.tar.gz
 ```
+
+
+```
+import pgdb
+conn = pgdb.Connection(user='postgres', host='localhost', database='test')
+conn.query('select * from pages limit 1')
+```
