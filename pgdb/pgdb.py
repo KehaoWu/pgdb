@@ -53,6 +53,9 @@ class Connection:
             if isinstance(e, psycopg2.InterfaceError):
                 self._reconnect()
             cursor = self.connection.cursor()
+        if cursor.connection.get_transaction_status() >= 3:
+            self._reconnect()
+            cursor = self.connection.cursor()
         return cursor
 
     def _reconnect(self):
