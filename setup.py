@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='pgdb',
-      version='0.0.4',
+      version='0.0.5',
       description="PostgreSQL wrapper",
       long_description="",
       classifiers=["Development Status :: 5 - Production/Stable",
