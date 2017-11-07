@@ -4,6 +4,7 @@
 
 
 import psycopg2
+from psycopg2 import extensions as _ext
 
 class PgdbError(Exception):
     def __init__(self, value):
@@ -78,8 +79,9 @@ class Connection:
                 cursor.close()
                 return res
         except Exception as e:
-            if cursor.connection.get_transaction_status() <= 6:
-                return self.query(*args, **kwargs)
+            if cursor.connection.get_transaction_status() == _ext.TRANSACTION_STATUS_UNKNOWN:
+                # 说明网络断开
+                self._reconnect()
             else:
                 raise e
 
@@ -98,8 +100,9 @@ class Connection:
             cursor.execute(*args, **kwargs)
             self.commit()
         except Exception as e:
-            if cursor.connection.get_transaction_status() <= 6:
-                self.execute(*args, **kwargs)
+            if cursor.connection.get_transaction_status() == _ext.TRANSACTION_STATUS_UNKNOWN:
+                # 说明网络断开
+                self._reconnect()
             else:
                 raise e
 
@@ -109,8 +112,9 @@ class Connection:
             cursor.executemany(*args, **kwargs)
             self.commit()
         except Exception as e:
-            if cursor.connection.get_transaction_status() <= 6:
-                self.executemany(*args, **kwargs)
+            if cursor.connection.get_transaction_status() == _ext.TRANSACTION_STATUS_UNKNOWN:
+                # 说明网络断开
+                self._reconnect()
             else:
                 raise e
 
