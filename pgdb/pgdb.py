@@ -1,4 +1,10 @@
+# @Author: Kehao Wu <wukehao>
+# @Date:   2017-04-06T09:50:22+08:00
+
+
+
 import psycopg2
+from psycopg2 import extensions as _ext
 
 class PgdbError(Exception):
     def __init__(self, value):
@@ -73,7 +79,11 @@ class Connection:
                 cursor.close()
                 return res
         except Exception as e:
-            raise e
+            if cursor.connection.get_transaction_status() == _ext.TRANSACTION_STATUS_UNKNOWN:
+                # 说明网络断开
+                self._reconnect()
+            else:
+                raise e
 
     def get(self, *args, **kwargs):
         res = self.query(*args, **kwargs)
@@ -90,7 +100,11 @@ class Connection:
             cursor.execute(*args, **kwargs)
             self.commit()
         except Exception as e:
-            raise e
+            if cursor.connection.get_transaction_status() == _ext.TRANSACTION_STATUS_UNKNOWN:
+                # 说明网络断开
+                self._reconnect()
+            else:
+                raise e
 
     def executemany(self, *args, **kwargs):
         cursor = self._cursor()
@@ -98,7 +112,11 @@ class Connection:
             cursor.executemany(*args, **kwargs)
             self.commit()
         except Exception as e:
-            raise e
+            if cursor.connection.get_transaction_status() == _ext.TRANSACTION_STATUS_UNKNOWN:
+                # 说明网络断开
+                self._reconnect()
+            else:
+                raise e
 
 
 

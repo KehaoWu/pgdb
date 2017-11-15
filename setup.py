@@ -1,7 +1,12 @@
+# @Author: Kehao Wu <wukehao>
+# @Date:   2017-04-06T09:53:40+08:00
+
+
+
 from setuptools import setup
 
 setup(name='pgdb',
-      version='0.0.5',
+      version='0.0.7.alpha',
       description="PostgreSQL wrapper",
       long_description="",
       classifiers=["Development Status :: 5 - Production/Stable",
