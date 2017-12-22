@@ -77,9 +77,9 @@ class Connection:
         may_dbname = self.db_kwargs.get('dbname', -1)
         may_database = self.db_kwargs.get('database', -1)
         if (may_dbname != -1) and may_database:  # 若提供了两个数据库名
-            raise ValueError('Name confused: {} or {}?'.format(may_dbname, may_database))
+            raise PgdbError('Name confused: {} or {}?'.format(may_dbname, may_database))
         elif (may_dbname == -1) and (may_database == -1):
-            raise ValueError('Should provide the database name to keyword "database" or "dbname"')
+            raise PgdbError('Should provide the database name to keyword "database" or "dbname"')
         dbname = may_dbname if may_dbname != -1 else may_database
         self.db_kwargs.pop('dbname', None)
         self.db_kwargs.pop('database', None)
