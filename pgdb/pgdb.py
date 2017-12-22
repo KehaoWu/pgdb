@@ -7,6 +7,9 @@ import psycopg2
 from psycopg2 import extensions as _ext
 
 class PgdbError(Exception):
+    """
+        Pgdb自定义错误类型。直接传入字符串作为提示
+    """
     def __init__(self, value):
         self.value = value
     def __str__(self):
@@ -53,6 +56,9 @@ class Connection:
         self._close()
 
     def ensure_connected(self):
+        """
+            确认数据库连接有效
+        """
         try:
             cursor = self.connection.cursor()
         except Exception as e:
@@ -65,6 +71,9 @@ class Connection:
         return cursor
 
     def _get_dsn(self):
+        """
+            自行拼接生成用于初始化数据库连接的 dsn 字符串
+        """
         may_dbname = self.db_kwargs.get('dbname', -1)
         may_database = self.db_kwargs.get('database', -1)
         if (may_dbname != -1) and may_database:  # 若提供了两个数据库名
@@ -78,6 +87,9 @@ class Connection:
         return dsn
 
     def _reconnect(self):
+        """
+            创建数据库连接
+        """
         self._close()
         try:
             self.connection = psycopg2.connect(*self.db_args, **self.db_kwargs)
@@ -90,6 +102,9 @@ class Connection:
         self.autocommit = True
 
     def query(self, *args, **kwargs):
+        """
+            查询多条记录
+        """
         cursor = self._cursor()
         try:
             cursor.execute(*args, **kwargs)
@@ -106,6 +121,9 @@ class Connection:
                 raise e
 
     def get(self, *args, **kwargs):
+        """
+            查询一条记录
+        """
         res = self.query(*args, **kwargs)
         if not res:
             return None
@@ -115,6 +133,9 @@ class Connection:
             return res[0]
 
     def execute(self, *args, **kwargs):
+        """
+            执行一条语句
+        """
         cursor = self._cursor()
         try:
             cursor.execute(*args, **kwargs)
@@ -127,6 +148,9 @@ class Connection:
                 raise e
 
     def executemany(self, *args, **kwargs):
+        """
+            执行多条语句
+        """
         cursor = self._cursor()
         try:
             cursor.executemany(*args, **kwargs)
