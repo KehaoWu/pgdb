@@ -64,9 +64,29 @@ class Connection:
             cursor = self.connection.cursor()
         return cursor
 
+    def _get_dsn(self):
+        may_dbname = self.db_kwargs.get('dbname', -1)
+        may_database = self.db_kwargs.get('database', -1)
+        if (may_dbname != -1) and may_database:  # 若提供了两个数据库名
+            raise ValueError('Name confused: {} or {}?'.format(may_dbname, may_database))
+        elif (may_dbname == -1) and (may_database == -1):
+            raise ValueError('Should provide the database name to keyword "database" or "dbname"')
+        dbname = may_dbname if may_dbname != -1 else may_database
+        self.db_kwargs.pop('dbname', None)
+        self.db_kwargs.pop('database', None)
+        dsn = psycopg2.extensions.make_dsn(*self.db_args, **self.db_kwargs) + " dbname='%s'" % dbname
+        return dsn
+
     def _reconnect(self):
         self._close()
-        self.connection = psycopg2.connect(*self.db_args, **self.db_kwargs)
+        try:
+            self.connection = psycopg2.connect(*self.db_args, **self.db_kwargs)
+
+         # 可能是中文名称数据库：解析中文数据库名可能报错，必须用自行拼接的字符串来初始化数据库连接
+         # 见 http://initd.org/psycopg/docs/module.html#psycopg2.connect
+        except psycopg2.ProgrammingError:
+            dsn = self._get_dsn()
+            self.connection = psycopg2.connect(dsn)
         self.autocommit = True
 
     def query(self, *args, **kwargs):
