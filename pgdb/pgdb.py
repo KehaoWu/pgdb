@@ -74,13 +74,12 @@ class Connection:
         """
             自行拼接生成用于初始化数据库连接的 dsn 字符串
         """
-        may_dbname = self.db_kwargs.get('dbname', -1)
-        may_database = self.db_kwargs.get('database', -1)
-        if (may_dbname != -1) and may_database:  # 若提供了两个数据库名
-            raise PgdbError('Name confused: {} or {}?'.format(may_dbname, may_database))
-        elif (may_dbname == -1) and (may_database == -1):
-            raise PgdbError('Should provide the database name to keyword "database" or "dbname"')
-        dbname = may_dbname if may_dbname != -1 else may_database
+        may_dbname = self.db_kwargs.get('dbname', '')
+        may_database = self.db_kwargs.get('database', '')
+
+        # 不会出现同时有值的情况：那样会在 try 时报 TypeError 而不会进到该函数
+        # 也不会同时没值：那样通常会报 psycopg2.OperationalError，也不会进到该函数
+        dbname = may_dbname or may_database
         self.db_kwargs.pop('dbname', None)
         self.db_kwargs.pop('database', None)
         dsn = psycopg2.extensions.make_dsn(*self.db_args, **self.db_kwargs) + " dbname='%s'" % dbname
