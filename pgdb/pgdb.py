@@ -82,7 +82,14 @@ class Connection:
         dbname = may_dbname or may_database
         self.db_kwargs.pop('dbname', None)
         self.db_kwargs.pop('database', None)
-        dsn = psycopg2.extensions.make_dsn(*self.db_args, **self.db_kwargs) + " dbname='%s'" % dbname
+
+        # 像 users, password 或其他关键字参数值为字符串，也可能 parse_dsn 失败
+        dsn_kwargs = ""
+        for k, v in self.db_kwargs.items():
+            dsn_kwargs += "{keyword}='{value}' ".format(keyword=k, value=v)
+        dsn_kwargs = dsn_kwargs[:-1]  # 去掉尾部空格
+
+        dsn = psycopg2.extensions.make_dsn(*self.db_args) + dsn_kwargs + " dbname='%s'" % dbname
         return dsn
 
     def _reconnect(self):
