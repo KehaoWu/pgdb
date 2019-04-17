@@ -6,7 +6,7 @@
 from setuptools import setup
 
 setup(name='pgdb',
-      version='0.0.7.alpha',
+      version='0.0.8',
       description="PostgreSQL wrapper",
       long_description="",
       classifiers=["Development Status :: 5 - Production/Stable",
@@ -22,5 +22,5 @@ setup(name='pgdb',
       packages=['pgdb'],
       include_package_data=True,
       zip_safe=True,
-      install_requires=["psycopg2>=2.5.2"],
+      install_requires=["psycopg2-binary>=2.8.2"],
       entry_points="")
