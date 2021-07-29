@@ -82,6 +82,7 @@ class Connection:
             if cursor.connection.get_transaction_status() == _ext.TRANSACTION_STATUS_UNKNOWN:
                 # 说明网络断开
                 self._reconnect()
+                return self.query(*args, **kwargs)
             else:
                 raise e
 
@@ -103,6 +104,7 @@ class Connection:
             if cursor.connection.get_transaction_status() == _ext.TRANSACTION_STATUS_UNKNOWN:
                 # 说明网络断开
                 self._reconnect()
+                self.execute(*args, **kwargs)
             else:
                 raise e
 
@@ -115,6 +117,7 @@ class Connection:
             if cursor.connection.get_transaction_status() == _ext.TRANSACTION_STATUS_UNKNOWN:
                 # 说明网络断开
                 self._reconnect()
+                self.executemany(*args, **kwargs)
             else:
                 raise e
 
