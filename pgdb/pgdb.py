@@ -32,6 +32,8 @@ class Connection:
         self.db_args = args
         self.db_kwargs = kwargs
         self._reconnect()
+        self.max_retry_count = 5
+        self.retry_count = 0
 
     def _close(self):
         if self.connection:
@@ -69,6 +71,13 @@ class Connection:
         self.connection = psycopg2.connect(*self.db_args, **self.db_kwargs)
         self.autocommit = True
 
+    def can_retry(self):
+        self.retry_count = self.retry_count + 1
+        can_retry = self.retry_count <= self.max_retry_count
+        if not can_retry:
+            raise PgdbError("Retry count {} exceed max retry count {}".format(self.retry_count, self.max_retry_count))
+        return can_retry
+
     def query(self, *args, **kwargs):
         cursor = self._cursor()
         try:
@@ -82,7 +91,8 @@ class Connection:
             if cursor.connection.get_transaction_status() == _ext.TRANSACTION_STATUS_UNKNOWN:
                 # 说明网络断开
                 self._reconnect()
-                return self.query(*args, **kwargs)
+                if self.can_retry():
+                    return self.query(*args, **kwargs)
             else:
                 raise e
 
@@ -104,7 +114,8 @@ class Connection:
             if cursor.connection.get_transaction_status() == _ext.TRANSACTION_STATUS_UNKNOWN:
                 # 说明网络断开
                 self._reconnect()
-                self.execute(*args, **kwargs)
+                if self.can_retry():
+                    self.execute(*args, **kwargs)
             else:
                 raise e
 
@@ -117,7 +128,8 @@ class Connection:
             if cursor.connection.get_transaction_status() == _ext.TRANSACTION_STATUS_UNKNOWN:
                 # 说明网络断开
                 self._reconnect()
-                self.executemany(*args, **kwargs)
+                if self.can_retry():
+                    self.executemany(*args, **kwargs)
             else:
                 raise e
 
